@@ -1,4 +1,7 @@
 import { useState } from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Button from 'react-bootstrap/Button';
+import './App.css'
 
 const App = () => {
   // what do we need to track
@@ -138,10 +141,11 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div className="center-align">
+      <h1>Image Upload Service</h1>
       <p>{message}</p>
       <h2>Fetch Single Random Image</h2>
-      <button onClick={fetchSingleFile}>Fetch Single File</button>
+      <Button variant="primary" onClick={fetchSingleFile}>Fetch Single File</Button>
       {displayImage && (
         <div>
           <h3>Single File</h3>
@@ -154,10 +158,13 @@ const App = () => {
       )}
       <form onSubmit={handleSubmitSingleFile}>
         <h2>Upload Single File</h2>
-        <input type="file" onChange={handleSingleFileChange} />
-        <button type="submit">Upload Single File</button>
+        <div className="file-input-wrapper">
+          <button className="button">Choose File</button>
+          <input type="file" onChange={handleSingleFileChange} />
+        </div>
       </form>
-      <button onClick={fetchMultiple}>Grab multiple files</button>
+      <h2>Fetch Multiple Images</h2>
+      <Button variant="primary" onClick={fetchMultiple}>Grab multiple files</Button>
       {/* Conditional rendering
       {condition ? (true) : (false)} */}
       {displayImages.length > 0 ? (
@@ -171,14 +178,16 @@ const App = () => {
       ) : (
         <p>No image to display</p>
       )}
-      <button onClick={fetchDogImage}>Fetch a dog image</button>
+      <h2>Fetch Dog Image</h2>
+      <Button variant="primary" onClick={fetchDogImage}>Fetch a dog image</Button>
       {displayDogImage && (
         <div>
           <img
             src={displayDogImage}
             style={{ width: "200px", margin: "10px" }}
           />
-          <button onClick={saveDogImage}>Save for later</button>
+          <br />
+          <Button variant="primary" onClick={saveDogImage}>Save for later</Button>
         </div>
       )}
     </div>

@@ -40,3 +40,35 @@
 .read-the-docs {
   color: #888;
 }
+
+.center-align {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.button {
+  background-color: rgba(0, 0, 255, 0.705);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 10%;
+  width: 150px;
+  height: 40px;
+}
+
+.file-input-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.file-input-wrapper input[type="file"] {
+  font-size: 100px; /* Make the file input huge */
+  position: absolute; /* Position it absolutely */
+  left: 0; /* Align it to the left */
+  top: 0; /* Align it to the top */
+  opacity: 0; /* Hide it by making it transparent */
+}
