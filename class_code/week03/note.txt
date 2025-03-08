@@ -1,0 +1,4 @@
+1. Terminal: npm init -y -> npm i express nodemon dotenv
+2. Create .env file: PORT = "number"
+3. package.json: "type": "module" *if you want to use "import"
+4. Create an index.js file
