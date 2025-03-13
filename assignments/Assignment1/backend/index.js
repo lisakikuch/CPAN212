@@ -97,8 +97,8 @@ app.get("/getSkills", (req, res) => {
         "technicalSkills": {
             "programmingLanguages": ["Java", "JavaScript", "Python", "SQL"],
             "backendDevelopment": ["Node.js", "MongoDB", "Mongoose", "RESTful API", "Django"],
-            "frontendDevelopment": ["React.js", "React Native"],
-            "relevantSkills": ["Git", "GitHub", "Postman & API Testing", "Problem Solving", "Data Structure", "Algorithms", "Agile/Scrum Methodologies"],
+            "frontendDevelopment": ["React.js", "React Native", "Bootstrap"],
+            "relevantSkills": ["Git", "GitHub", "Postman & API Testing", "Problem Solving", "Data Structures", "Algorithms", "Agile/Scrum Methodologies"],
         },
         "softSkills": ["English", "Vietnamese", "Japanese"]
     })
