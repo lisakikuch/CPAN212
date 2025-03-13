@@ -1,0 +1,75 @@
+Online Resume
+
+Objective:
+Develop a basic React application using the react-bootstrap CLI integrated with an
+Express application. Your Express server will provide arrays of data for different
+sections of your resume, which your React application will fetch and display. Aim
+to design a clean and visually appealing online resume.
+
+Guidelines:
+1. React Application (Port 3000/ default port from Vite):
+• Initialize your project using the Vite/CRA/ your frontend of choice.
+• Fetch and loop through arrays of data from the Express server
+endpoints to display sections like education, experience,
+overview, etc.
+• Make use of React components to achieve a responsive layout.
+• Prioritize design elements such as padding, alignment, and layout.
+• Maintain a professional look with consistent colors and
+typography.
+
+2. Express Application (Port 8000):
+• Your server should have at least the following endpoints, each
+returning data:
+▪ /getEdu: Returns education details.
+▪ /getExp: Returns professional experience details.
+▪ /getOverview: Returns a brief about the individual.
+▪ Feel free to introduce more endpoints for additional sections
+like skills, certifications, etc.
+• Ensure CORS settings allow for communication from the React
+app running on port 3000.
+
+3. Integration:
+• Your React application should make GET requests to the specified
+Express server endpoints and render the returned data. For
+example, to display education details, fetch data from the /getEdu
+endpoint.
+
+4. Design Guidelines:
+• Padding: Ensure consistent padding around each section.
+Consider 15px for top and bottom padding and 10px for left and
+right.
+• Typography: Use clear font sizes. Headings should stand out (e.g.,
+24px), with subheadings and content being slightly smaller (e.g.,
+18px for subheadings and 16px for content).
+• Alignment: Left-align text for readability, but you can opt for
+center or right alignment for headings or other design elements. o
+Colors: Limit yourself to 3 primary colors to maintain cohesion.
+Ensure good contrast between text and background for
+readability.
+
+Submission:
+1. Upload both your React and Express projects as one repository or 1 sub
+directory inside your main GitHub directory for this class
+a If you cannot, send the zip folder with both client and server-side
+code
+b I will deduct marks if I must go through node modules
+2. Provide a screenshot of the displayed online resume from your React
+application.
+Grading:
+1. Functionality (50%): All endpoints should be functional, and the React app
+should fetch and display the data without issues.
+2. Design (30%): The appearance of the online resume is crucial. Proper
+implementation of padding, alignment, typography, and color schemes will
+be assessed.
+3. Code Quality (20%): Your code should be structured, adequately
+commented, and devoid of unnecessary logs or debug statements. (remove
+them before your submissions)
+Reminder: Use fictitious data for all resume sections to ensure no personal or
+confidential information is shared.
+
+HELPER CODE SNIPPETS:
+1. Fetching Data in React from an Endpoint:
+To fetch data from your Express server within a React component, you can use
+the fetch function. Here's a simple example for fetching education details from
+the /getEdu endpoint:
+JavaScript
