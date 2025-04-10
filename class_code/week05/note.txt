@@ -1,0 +1,10 @@
+server:
+1. npm init -y
+2. npm i nodemon express
+3. set to type module
+
+client:
+1. npm cretate vite@latest .
+2. options: y, React, JavaScript
+3. npm i
+4. npm run dev
