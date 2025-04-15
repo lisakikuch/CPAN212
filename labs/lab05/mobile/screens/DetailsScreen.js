@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { EntriesContext } from "../contexts/EntriesContext";
 import { View, StyleSheet, Alert, Text, TextInput, TouchableOpacity } from "react-native";
 import { API_URL } from '@env';
 import axios from "axios";
 import { Ionicons } from '@expo/vector-icons';
+import { MultiSelect } from 'react-native-element-dropdown';
 import { Dropdown } from 'react-native-element-dropdown';
 
 const DetailsScreen = ({ route, navigation }) => {
+
+    const { entries, fetchEntries, dispatch } = useContext(EntriesContext);
 
     const { entry } = route.params;
     console.log("Entry Details from Route Params: ", entry);
@@ -13,7 +17,7 @@ const DetailsScreen = ({ route, navigation }) => {
     const [title, setTitle] = useState(entry.title);
     const [content, setContent] = useState(entry.content);
     const [mood, setMood] = useState(entry.mood);
-    const [tag, setTag] = useState(entry.tag);
+    const [tags, setTags] = useState(entry.tags?.split(",") || []);
     const [date, setDate] = useState(entry.created_at);
     const [isEditing, setIsEditing] = useState(false);
 
@@ -31,7 +35,7 @@ const DetailsScreen = ({ route, navigation }) => {
         console.log("Saving Entry...");
 
         // Input Validation
-        if (!title || !content || !mood || !tag) {
+        if (!title || !content || !mood || !tags) {
             Alert.alert("Error", "Please fill out all fields");
             return;
         }
@@ -43,11 +47,12 @@ const DetailsScreen = ({ route, navigation }) => {
                     title: title,
                     content: content,
                     mood: mood,
-                    tag: tag
+                    tags: tags
                 }
             );
 
             if (res.status === 200) {
+                dispatch({ type: 'UPDATE_ENTRY', payload: res.data.entry });
                 Alert.alert("Success", "Your entry has been updated");
             }
         } catch (err) {
@@ -65,6 +70,7 @@ const DetailsScreen = ({ route, navigation }) => {
             );
 
             if (res.status === 200) {
+                dispatch({ type: 'DELETE_ENTRY', payload: entry.id });
                 Alert.alert("Success", "Entry Deleted");
                 navigation.goBack();
             }
@@ -76,20 +82,27 @@ const DetailsScreen = ({ route, navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Dropdown
-                style={styles.input}
+            <MultiSelect
+                style={[
+                    styles.input,
+                    !isEditing && { backgroundColor: "#ddd" }
+                ]}
                 data={formattedTagTypes}
-                labelField='label'
-                valueField='value'
-                value={tag}
-                onChange={(item) => {
-                    setTag(item.value);
-                }}
-                placeholder="Select Tag"
-                editable={isEditing}
+                labelField="label"
+                valueField="value"
+                placeholder="Select Tags"
+                value={tags}
+                onChange={setTags}
+                selectedTextStyle={{ color: '#000' }}
+                itemTextStyle={{ color: '#000' }}
+                activeColor="#e6f0ff"
+                disable={!isEditing}
             />
             <Dropdown
-                style={styles.input}
+                style={[
+                    styles.input,
+                    !isEditing && { backgroundColor: "#ddd" }
+                ]}
                 data={formattedMoodTypes}
                 labelField='label'
                 valueField='value'
@@ -98,21 +111,31 @@ const DetailsScreen = ({ route, navigation }) => {
                     setMood(item.value);
                 }}
                 placeholder="Select Mood"
-                editable={isEditing}
+                disable={!isEditing}
+                textStyle={{ color: isEditing ? "#000" : "#666" }}
             />
             <TextInput
                 value={title}
                 onChangeText={setTitle}
                 editable={isEditing}
-                style={styles.input}
+                style={[
+                    styles.input,
+                    !isEditing && { backgroundColor: "#ddd" }
+                ]}
+
             />
             <TextInput
                 value={content}
                 onChangeText={setContent}
                 editable={isEditing}
-                style={[styles.input, { height: 200, textAlignVertical: "top" }]}
+                style={[
+                    styles.input,
+                    { height: 150, textAlignVertical: "top" },
+                    !isEditing && { backgroundColor: "#ddd" }
+                ]}
+                multiline={true}
             />
-            <Text style={styles.input}>
+            <Text style={[styles.input, {color: "gray", backgroundColor: "#ddd"}]}>
                 {new Date(date).toLocaleString()}
             </Text>
             <TouchableOpacity

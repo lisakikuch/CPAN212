@@ -1,15 +1,19 @@
-import { useState } from "react";
-import { View, StyleSheet, Alert, Text, TextInput, TouchableOpacity } from "react-native";
+import { useState, useContext } from "react";
+import { EntriesContext } from "../contexts/EntriesContext";
+import { View, StyleSheet, Alert, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView, Platform } from "react-native";
 import { API_URL } from '@env';
 import axios from "axios";
-import { Dropdown } from 'react-native-element-dropdown';
+import { MultiSelect } from 'react-native-element-dropdown';
+import { Dropdown } from "react-native-element-dropdown";
 
 const AddScreen = () => {
+
+    const { dispatch } = useContext(EntriesContext);
 
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [mood, setMood] = useState("");
-    const [tag, setTag] = useState("");
+    const [tags, setTags] = useState([]);
 
     const MOODTYPES = ["Positive", "Neutral", "Negative"];
     const formattedMoodTypes = MOODTYPES.map((item) => ({
@@ -24,28 +28,32 @@ const AddScreen = () => {
     const handleAddEntry = async () => {
         console.log("Adding Entry...");
 
-        if (!title || !content || !mood || !tag) {
+        if (!title || !content || !mood || !tags) {
             Alert.alert("Error", "Please fill out all fields");
             return;
         }
 
         try {
+            console.log("Payload: ", {title, content, mood, tags});
+
             const res = await axios.post(
                 `${API_URL}/entries`,
                 {
-                    title: title,
-                    content: content,
-                    mood: mood,
-                    tag: tag
+                    title,
+                    content,
+                    mood,
+                    tags,
                 }
             );
 
             if (res.status === 201) {
+                dispatch({ type: 'ADD_ENTRY', payload: res.data });
+
                 Alert.alert("Success", "Entry added");
 
                 setTitle("");
                 setContent("");
-                setTag("");
+                setTags([]);
                 setMood("");
             }
 
@@ -57,19 +65,22 @@ const AddScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Dropdown
+            <MultiSelect
                 style={styles.input}
                 data={formattedTagTypes}
-                labelField='label'
-                valueField='value'
-                value={tag}
-                onChange={(item) => {
-                    setTag(item.value);
-                }}
-                placeholder="Select Tag"
+                labelField="label"
+                valueField="value"
+                placeholder="Select Tags"
+                value={tags}
+                onChange={setTags}
+                selectedTextStyle={{ color: '#000' }}
+                placeholderStyle={{ color: '#aaa' }}
+                itemTextStyle={{ color: '#000' }}
+                activeColor="#e6f0ff"
             />
             <Dropdown
                 style={styles.input}
+                placeholderStyle={{ color: '#aaa' }}
                 data={formattedMoodTypes}
                 labelField='label'
                 valueField='value'
@@ -87,11 +98,12 @@ const AddScreen = () => {
                 onChangeText={setTitle}
             />
             <TextInput
-                style={[styles.input, { height: 380, textAlignVertical: "top" }]}
+                style={[styles.input, { height: 150, textAlignVertical: "top" }]}
                 placeholder="Content"
                 keyboardType="default"
                 value={content}
                 onChangeText={setContent}
+                multiline={true}
             />
             <TouchableOpacity
                 style={styles.updateButton}

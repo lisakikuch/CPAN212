@@ -1,56 +1,48 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, FlatList } from "react-native";
-import { API_URL } from '@env';
-import { Ionicons } from '@expo/vector-icons';
+import { EntriesContext } from "../contexts/EntriesContext";
 
-import axios from 'axios';
+import { Ionicons } from '@expo/vector-icons';
+import { MultiSelect } from 'react-native-element-dropdown';
 
 const HomeScreen = ({ navigation }) => {
-    const [entries, setEntries] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
 
-    const fetchEntryData = async () => {
-        try {
-            setIsLoading(true);
+    const { entries, fetchEntries } = useContext(EntriesContext);
 
-            const res = await axios.get(
-                `${API_URL}/entries`
-            );
-
-            setEntries(res.data);
-            console.log(res.data);
-
-        } catch (err) {
-            console.error("Error fetching entries data: ", err);
-
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const [tags, setTags] = useState([]);
+    const TAGTYPES = ["Thoughts", "Goals", "Work", "School", "Family", "Love", "Travel", "Others"];
+    const formattedTagTypes = TAGTYPES.map((item) => ({
+        label: item, value: item
+    }));
 
     useEffect(() => {
-        fetchEntryData();
-    }, []);
+        fetchEntries(tags);
+    }, [tags]);
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity
-                style={{ alignItems: 'flex-end', marginBottom: 16 }}
-                onPress={() => fetchEntryData()}
-            >
-                <Ionicons name="refresh" size={28} color="black" />
-            </TouchableOpacity>
+            <MultiSelect
+                style={styles.input}
+                data={formattedTagTypes}
+                labelField="label"
+                valueField="value"
+                placeholder="Filter Entries"
+                value={tags}
+                onChange={setTags}
+                selectedTextStyle={{ color: '#000' }}
+                placeholderStyle={{ color: '#aaa' }}
+                itemTextStyle={{ color: '#000' }}
+                activeColor="#e6f0ff"
+            />
 
-            {isLoading ? (
-                <ActivityIndicator />
-            ) : entries.length === 0 ? (
+            {entries.length === 0 ? (
                 <View style={styles.noDataText}>
                     <Text style={{ textAlign: 'center' }}>No Entry Data to Show</Text>
                 </View>
             ) : (
                 <FlatList
                     data={entries}
-                    keyExtractor={(item) => item.id.toString()}
+                    keyExtractor={(item) => item.id}
                     renderItem={({ item }) => {
                         const createdAt = new Date(item.created_at);
                         const updatedAt = new Date(item.updated_at);
@@ -58,11 +50,19 @@ const HomeScreen = ({ navigation }) => {
 
                         return (
                             <TouchableOpacity
-                            style={styles.entryCard}
+                                style={styles.entryCard}
                                 onPress={() => navigation.navigate('Details', { entry: item })}
                             >
                                 <Text style={styles.entryTitle}>{item.title}</Text>
-                                <Text style={styles.entryTag}>{item.tag}</Text>
+                                <View style={styles.tagContainer}>
+                                    {(typeof item.tags === 'string' ? item.tags.split(',') : []).map((tag, index) => (
+                                        <View key={index} style={styles.tagChip}>
+                                            <Text style={styles.tagText}>{tag.trim()}</Text>
+                                        </View>
+                                    ))}
+                                </View>
+
+
                                 <Text style={styles.entryDate}>{showDate.toLocaleString()}</Text>
                             </TouchableOpacity>
                         );
@@ -129,6 +129,32 @@ const styles = StyleSheet.create({
     entryDate: {
         fontSize: 12,
         color: "#888",
+    },
+    tagContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        marginTop: 4,
+    },
+    tagChip: {
+        backgroundColor: '#DCEEFF',
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 12,
+        marginRight: 6,
+        marginBottom: 6,
+    },
+    tagText: {
+        fontSize: 12,
+        color: '#333',
+    },
+    input: {
+        backgroundColor: "#E9ECEF",
+        padding: 12,
+        borderRadius: 5,
+        marginTop: 5,
+        marginBottom: 15,
+        fontSize: 16,
+        color: "#333",
     },
 });
 
